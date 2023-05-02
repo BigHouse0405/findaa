@@ -10,3 +10,4 @@ services:
       - "5432:5432"
     volumes:
       - ./ui_test_config.sql:/docker-entrypoint-initdb.d/ui_test_config.sql
+      - ./ui_test_populate.sql:/ui_test_populate.sql
