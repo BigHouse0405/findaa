@@ -31,3 +31,11 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+tasks.register('startPostgres', Exec) {
+    commandLine 'docker-compose', 'up', '-d'
+}
+
+tasks.register('stopPostgres', Exec) {
+    commandLine 'docker-compose', 'down'
+}
