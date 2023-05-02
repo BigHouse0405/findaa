@@ -5,6 +5,11 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+src/main/resources/certs/*
+src/main/resources/keystore.p12
+tools/*.csr
+
+
 ### STS ###
 .apt_generated
 .classpath
