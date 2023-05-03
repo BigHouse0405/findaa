@@ -1,6 +1,8 @@
 package com.bntech.qrekru.data.repository;
 
 import com.bntech.qrekru.data.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -16,4 +18,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
     Optional<User> findByFullName(String name);
 
     Boolean existsByFullName(String name);
+
+    @Override
+    Page<User> findAll(Pageable pageable);
 }

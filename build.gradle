@@ -79,6 +79,6 @@ tasks.register('populateDatabase', Exec) {
 }
 
 tasks.register('runContainer', Exec) {
-    commandLine "sh",  "$projectDir/container.sh"
+    commandLine "sh",  "$projectDir/tools/container.sh"
     commandLine 'docker-compose', 'up', '-d'
 }
