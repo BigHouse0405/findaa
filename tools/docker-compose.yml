@@ -9,19 +9,11 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./tools/ui_test_config.sql:/docker-entrypoint-initdb.d/ui_test_config.sql
-      - ./tools/ui_test_populate.sql:/ui_test_populate.sql
+      - ./ui_test_config.sql:/docker-entrypoint-initdb.d/ui_test_config.sql
+      - ./ui_test_populate.sql:/ui_test_populate.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
-  qrekru:
-    image: finda/bntech-qrekru:latest.arm
-    build: .
-    ports:
-      - "8443:8443"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: always
+

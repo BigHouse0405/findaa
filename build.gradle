@@ -24,6 +24,18 @@ dependencyManagement {
     }
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.bntech.qrekru.QrekruApplication'
+        )
+    }
+}
+
+bootJar {
+    enabled = true
+    mainClass = 'com.bntech.qrekru.QrekruApplication'
+}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -54,14 +66,19 @@ tasks.named('test') {
 }
 
 tasks.register('startPostgres', Exec) {
-    commandLine 'docker-compose', 'up', '-d'
+    commandLine 'docker-compose', '-f', './tools/docker-compose.yml', '-p', 'qrekru', 'up', '-d'
 }
 
 tasks.register('stopPostgres', Exec) {
-    commandLine 'docker-compose', 'down'
+    commandLine 'docker-compose', '-p', 'qrekru', '-f', './tools/docker-compose.yml', 'down'
 }
 
 tasks.register('populateDatabase', Exec) {
     commandLine "docker", "exec", "qrekru_postgres_1", "psql", "-U", "ui_test", "-d", "ui_test", "-a", "-f", "ui_test_populate.sql"
     environment 'PGPASSWORD', 'ui_test'
+}
+
+tasks.register('runContainer', Exec) {
+    commandLine "sh",  "$projectDir/container.sh"
+    commandLine 'docker-compose', 'up', '-d'
 }

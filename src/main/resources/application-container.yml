@@ -1,0 +1,39 @@
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: pass1
+    key-store-type: PKCS12
+    trust-certificate: classpath:certs/qrekru.crt
+    trust-certificate-private-key: classpath:certs/qrekru.key
+
+spring:
+  datasource:
+    url: jdbc:postgresql://qrekru_postgres_1:5432/ui_test
+    username: ui_test
+    password: ui_test
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+  #      ddl-auto: update
+  security:
+    user:
+      name: admin
+      password: admin
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:publicKey.txt
+springdoc:
+  version: '@springdoc.version@'
+  swagger-ui:
+    display-request-duration: true
+    groups-order: DESC
+    operationsSorter: method
+    disable-swagger-default-url: true
+    use-root-path: true
+  show-actuator: true
+  enable-spring-security: true
