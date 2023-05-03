@@ -1,9 +1,11 @@
-package com.bntech.qrekru.api;
+package com.bntech.qrekru.api.controller;
 
 import com.bntech.qrekru.data.object.AuthRequest;
 import com.bntech.qrekru.data.object.AuthResponse;
 import com.bntech.qrekru.service.JwtTokenService;
-import com.bntech.qrekru.service.UserDetailsServiceImpl;
+import com.bntech.qrekru.service.impl.JwtTokenServiceImpl;
+import com.bntech.qrekru.service.impl.UserDetailsServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +19,9 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.bntech.qrekru.config.Const.api_AUTHENTICATE;
-import static com.bntech.qrekru.config.Const.api_VERSION;
+import static com.bntech.qrekru.config.Const.*;
 
-@RestController()
+@RestController
 @RequestMapping(api_VERSION)
 public class AuthController {
     private final AuthenticationManager auth;
@@ -28,17 +29,19 @@ public class AuthController {
     private final JwtTokenService jwt;
 
     @Autowired
-    public AuthController(AuthenticationManager auth, UserDetailsServiceImpl users, JwtTokenService jwt) {
+    public AuthController(AuthenticationManager auth, UserDetailsServiceImpl users, JwtTokenServiceImpl jwt) {
         this.auth = auth;
         this.users = users;
         this.jwt = jwt;
     }
 
-    @GetMapping("/csrf")
+    @Operation(summary = "Get CSRF token")
+    @GetMapping(api_CSRF)
     public CsrfToken csrf(CsrfToken token) {
         return token;
     }
 
+    @Operation(summary = "OAuth2 Authentication endpoint")
     @PostMapping(api_AUTHENTICATE)
     public AuthResponse authenticate(@RequestBody @Valid final AuthRequest authenticationRequest) {
         try {

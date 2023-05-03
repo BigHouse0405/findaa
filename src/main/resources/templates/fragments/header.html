@@ -1,0 +1,27 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>403</title>
+    <base href="/">
+    <div th:fragment="header-css">
+        <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    </div>
+</head>
+
+<body>
+<div th:fragment="header">
+    <!-- this is header -->
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                Ops
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <a th:href="@{/}">Home</a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.bntech.qrekru.config;
 
 import com.bntech.qrekru.api.JwtRequestFilter;
+import com.bntech.qrekru.api.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Collections;
@@ -22,10 +22,12 @@ import static com.bntech.qrekru.config.Const.*;
 @Configuration
 public class SecurityConfig {
     private final JwtRequestFilter jwtFilter;
+    private final CustomAuthenticationEntryPoint accessDeniedHandler;
 
     @Autowired
-    public SecurityConfig(JwtRequestFilter jwtFilter) {
+    public SecurityConfig(JwtRequestFilter jwtFilter, CustomAuthenticationEntryPoint accessDeniedHandler) {
         this.jwtFilter = jwtFilter;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -42,7 +44,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(final HttpSecurity http) throws Exception {
         String authEndpoint = api_VERSION + api_AUTHENTICATE;
+        String apiErrorEndpoint = api_ERROR + api_403;
         String swaggerEndpoint = api_SWAGGER_UI + "/**";
+        String resourcesEndpoint = api_RESOURCES + "/**";
         String indexEndpoint = "/";
         String apiDocsEndpoint = "/v3/api-docs/**";
 
@@ -62,7 +66,7 @@ public class SecurityConfig {
 //                .ignoringRequestMatchers(authEndpoint)
 //                .and()
                 .authorizeHttpRequests()
-                .requestMatchers(authEndpoint, swaggerEndpoint, indexEndpoint, apiDocsEndpoint)
+                .requestMatchers(authEndpoint, swaggerEndpoint, indexEndpoint, apiDocsEndpoint, apiErrorEndpoint, resourcesEndpoint)
                 .permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
@@ -73,6 +77,6 @@ public class SecurityConfig {
                 .logout().disable()
                 .headers().xssProtection()
                 .and().contentSecurityPolicy("script-src 'self'")
-                .and().and().build();
+                .and().and().exceptionHandling().authenticationEntryPoint(accessDeniedHandler).and().build();
     }
 }

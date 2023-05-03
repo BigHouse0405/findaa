@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>403</title>
+    <base href="/">
+    <link rel="stylesheet" th:href="@{/resources/main.css}"/>
+</head>
+<body class="container">
+
+<div class="top">
+    <h1>403 - Access is denied</h1>
+    <div th:inline="text" class="font">
+        You do not have permission to access this page.
+    </div>
+    <div th:inline="text" class="font">
+        <a href="/"> Go back to main page</a>
+    </div>
+</div>
+<img src="resources/static/images/pepe.png" width="100" th:src="@{/resources/pepe.png}" alt="pepe" class="pepe"/>
+
+</body>
+</html>

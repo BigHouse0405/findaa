@@ -1,8 +1,8 @@
 package com.bntech.qrekru.api;
 
 import com.bntech.qrekru.data.object.AppUserDetails;
-import com.bntech.qrekru.service.JwtTokenService;
-import com.bntech.qrekru.service.UserDetailsServiceImpl;
+import com.bntech.qrekru.service.impl.JwtTokenServiceImpl;
+import com.bntech.qrekru.service.impl.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,11 +23,11 @@ import static com.bntech.qrekru.config.Const.BEARER;
 @Component
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
-    private final JwtTokenService jwt;
+    private final JwtTokenServiceImpl jwt;
     private final UserDetailsServiceImpl users;
 
     @Autowired
-    public JwtRequestFilter(JwtTokenService jwt, UserDetailsServiceImpl users) {
+    public JwtRequestFilter(JwtTokenServiceImpl jwt, UserDetailsServiceImpl users) {
         this.jwt = jwt;
         this.users = users;
     }
@@ -52,6 +52,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         final AppUserDetails userDetails = users.loadUserByUsername(username);
+        if (userDetails == null) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

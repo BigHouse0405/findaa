@@ -27,6 +27,11 @@ public class Const {
     public static final String api_VERSION = "/v1";
     public static final String api_AUTHENTICATE = "/authenticate";
     public static final String api_SWAGGER_UI = "/swagger-ui";
-
-
+    public static final String api_ERROR = "/error";
+    public static final String api_CSRF = "/csrf";
+    public static final String api_CSS = "/main.css";
+    public static final String api_RESOURCES = "/resources";
+    public static final String api_PEPE = "/pepe.png";
+    public static final String api_403 = "/403";
+    public static final String api_USERS = "/users";
 }

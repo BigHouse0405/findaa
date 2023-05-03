@@ -10,7 +10,10 @@ import java.util.Optional;
 @RepositoryRestResource(collectionResourceRel = "users", path = "users")
 public interface UserRepository extends PagingAndSortingRepository<User, Long>, JpaRepository<User, Long> {
     User findById(long id);
+
     User findByPwd(String pwd);
+
     Optional<User> findByFullName(String name);
+
     Boolean existsByFullName(String name);
 }

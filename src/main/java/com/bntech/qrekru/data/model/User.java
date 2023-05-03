@@ -3,6 +3,7 @@ package com.bntech.qrekru.data.model;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -55,5 +56,11 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         createdAt = Instant.now();
+    }
+
+    public User(String pwd, String fullName, @Nullable Set<Role> roles) {
+        this.pwd = pwd;
+        this.fullName = fullName;
+        this.roles = roles;
     }
 }

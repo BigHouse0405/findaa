@@ -1,4 +1,4 @@
-package com.bntech.qrekru.service;
+package com.bntech.qrekru.service.impl;
 
 import com.bntech.qrekru.data.model.User;
 import com.bntech.qrekru.data.object.AppUserDetails;
