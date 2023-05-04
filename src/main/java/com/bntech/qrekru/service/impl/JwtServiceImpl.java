@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.bntech.qrekru.service.JwtTokenService;
+import com.bntech.qrekru.service.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -15,13 +15,14 @@ import static com.bntech.qrekru.config.Const.TOKEN_DURATION;
 
 @Service
 @Slf4j
-public class JwtTokenServiceImpl implements JwtTokenService {
+public class JwtServiceImpl implements JwtService {
     private final Algorithm hmac512;
     private final JWTVerifier check;
 
+
     //todo: get key
 //    public JwtTokenService(@Value("${getsecretsomehow???}") final String secret) {
-    public JwtTokenServiceImpl() {
+    public JwtServiceImpl() {
         this.hmac512 = Algorithm.HMAC512("secret");
         this.check = JWT.require(this.hmac512).build();
     }

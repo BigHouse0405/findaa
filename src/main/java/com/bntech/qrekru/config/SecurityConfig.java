@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Collections;
+import java.util.List;
 
 import static com.bntech.qrekru.config.Const.*;
 
@@ -49,11 +50,16 @@ public class SecurityConfig {
         String resourcesEndpoint = api_RESOURCES + "/**";
         String indexEndpoint = "/";
         String apiDocsEndpoint = "/v3/api-docs/**";
+        String wsEndpoint = "/ws/**";
 
         return http.cors()
                 .configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Collections.singletonList(WILDCARD));
+                    config.setAllowedOrigins(List.of(
+                            "http://localhost:3000",
+                            "http://localhost",
+                            "https://localhost",
+                            "https://localhost:3000"));
                     config.setAllowedMethods(Collections.singletonList(WILDCARD));
                     config.setAllowedHeaders(Collections.singletonList(WILDCARD));
                     config.setAllowCredentials(true);
@@ -66,7 +72,14 @@ public class SecurityConfig {
 //                .ignoringRequestMatchers(authEndpoint)
 //                .and()
                 .authorizeHttpRequests()
-                .requestMatchers(authEndpoint, swaggerEndpoint, indexEndpoint, apiDocsEndpoint, apiErrorEndpoint, resourcesEndpoint)
+                .requestMatchers(
+                        authEndpoint,
+                        swaggerEndpoint,
+                        indexEndpoint,
+                        apiDocsEndpoint,
+                        apiErrorEndpoint,
+                        resourcesEndpoint,
+                        wsEndpoint)
                 .permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
@@ -79,4 +92,5 @@ public class SecurityConfig {
                 .and().contentSecurityPolicy("script-src 'self'")
                 .and().and().exceptionHandling().authenticationEntryPoint(accessDeniedHandler).and().build();
     }
+
 }

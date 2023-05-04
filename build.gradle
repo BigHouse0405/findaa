@@ -38,27 +38,36 @@ bootJar {
 }
 
 dependencies {
+//    http
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
+//    security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation('com.auth0:java-jwt:4.4.0')
 
+//    messaging
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+//    swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     implementation 'org.springdoc:springdoc-openapi:2.0.2'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
+//    database
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.hibernate.validator:hibernate-validator'
     runtimeOnly 'org.postgresql:postgresql'
 
+//    util & test
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 }
 
 tasks.named('test') {
@@ -79,6 +88,6 @@ tasks.register('populateDatabase', Exec) {
 }
 
 tasks.register('runContainer', Exec) {
-    commandLine "sh",  "$projectDir/tools/container.sh"
+    commandLine "sh", "$projectDir/tools/container.sh"
     commandLine 'docker-compose', 'up', '-d'
 }

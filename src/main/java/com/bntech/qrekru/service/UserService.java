@@ -2,6 +2,8 @@ package com.bntech.qrekru.service;
 
 import com.bntech.qrekru.data.model.Role;
 import com.bntech.qrekru.data.model.User;
+import com.bntech.qrekru.data.object.AuthRequest;
+import com.bntech.qrekru.data.object.AuthResponse;
 import com.bntech.qrekru.data.object.UserDto;
 
 import java.util.Set;
@@ -40,4 +42,12 @@ public interface UserService {
      * @return User if saved and assigned roles
      */
     User save(UserDto user, Set<Role> roles);
+
+    /**
+     * Authenticate incoming user and password combination against database
+     *
+     * @param authenticationRequest User and password
+     * @return AuthenticationResponse oauth2 token
+     */
+    AuthResponse authenticate(final AuthRequest authenticationRequest);
 }

@@ -53,7 +53,7 @@ rotateTlsCerts() {
   fi
 
   inf "TLS" "\tGenerating service keypairs..."
-  openssl req -out $certsdir/$tlsClient.csr -newkey rsa:2048 -nodes -keyout $certsdir/$tlsClient.key -subj "/CN=app.qrekru/O=app organization"
+  openssl req -out $certsdir/$tlsClient.csr -newkey rsa:2048 -nodes -keyout $certsdir/$tlsClient.key -subj "/CN=localhost/O=app organization"
   openssl x509 -req -sha256 -days 365 -CA $certsdir/$tlsCA.crt -CAkey $certsdir/$tlsCA.key -set_serial 0 -in $certsdir/$tlsClient.csr -out $certsdir/$tlsClient.crt
   if [ $? -eq 0 ]; then
     inf "TLS" "\tGenerated service keypair"
@@ -67,13 +67,20 @@ rotateTlsCerts() {
 
 
   inf "TLS" "\tMoving certificates to classpath..."
-  mv $certsdir/$tlsClient.crt $workdir/src/main/resources/certs
+  cp $certsdir/$tlsClient.crt $workdir/src/main/resources/certs
+  mv $certsdir/$tlsClient.crt $workdir/tools/stomp/keys
   mv $certsdir/$tlsClient.key $workdir/src/main/resources/certs
-  mv $certsdir/$tlsCA.crt $workdir/src/main/resources/certs
-  mv $certsdir/$tlsCA.key $workdir/src/main/resources/certs
+
+  cp $certsdir/$tlsCA.crt $workdir/src/main/resources/certs
+  mv $certsdir/$tlsCA.crt $workdir/tools/stomp/keys
+  cp $certsdir/$tlsCA.key $workdir/src/main/resources/certs
+  mv $certsdir/$tlsCA.key $workdir/tools/stomp/keys
+
   mv $certsdir/keystore.p12 $workdir/src/main/resources
   cp $workdir/src/main/resources/application-template.yml $workdir/src/main/resources/application.yml
+  cp $workdir/src/main/resources/application-container-template.yml $workdir/src/main/resources/application-container.yml
   sed -i '' "s/KEYSTORE_SED/$keystorePassword/g" $workdir/src/main/resources/application.yml
+  sed -i '' "s/KEYSTORE_SED/$keystorePassword/g" $workdir/src/main/resources/application-container.yml
   inf "TLS" "\tDone with TLS rotation [2/2]"
 }
 

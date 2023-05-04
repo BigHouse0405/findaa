@@ -8,7 +8,9 @@ build/
 src/main/resources/certs/*
 src/main/resources/keystore.p12
 tools/*.csr
-
+tools/stomp/node_modules
+tools/stomp/package-lock.json
+tools/stomp/keys/*
 
 ### STS ###
 .apt_generated
@@ -18,7 +20,7 @@ tools/*.csr
 .settings
 .springBeans
 .sts4-cache
-bin/
+
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 

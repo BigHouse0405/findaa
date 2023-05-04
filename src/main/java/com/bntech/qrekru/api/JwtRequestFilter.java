@@ -1,7 +1,8 @@
 package com.bntech.qrekru.api;
 
 import com.bntech.qrekru.data.object.AppUserDetails;
-import com.bntech.qrekru.service.impl.JwtTokenServiceImpl;
+import com.bntech.qrekru.service.JwtService;
+import com.bntech.qrekru.service.impl.JwtServiceImpl;
 import com.bntech.qrekru.service.impl.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,11 +24,11 @@ import static com.bntech.qrekru.config.Const.BEARER;
 @Component
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
-    private final JwtTokenServiceImpl jwt;
+    private final JwtService jwt;
     private final UserDetailsServiceImpl users;
 
     @Autowired
-    public JwtRequestFilter(JwtTokenServiceImpl jwt, UserDetailsServiceImpl users) {
+    public JwtRequestFilter(JwtServiceImpl jwt, UserDetailsServiceImpl users) {
         this.jwt = jwt;
         this.users = users;
     }
