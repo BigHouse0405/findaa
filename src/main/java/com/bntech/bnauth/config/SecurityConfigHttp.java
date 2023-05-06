@@ -57,14 +57,14 @@ public class SecurityConfigHttp {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of(
                             "http://localhost:3000",
-                            "https://bnauth_bnauth_1:8443",
-                            "https://bnauth_bnauth_1:",
-                            "http://bnauth_bnauth_1:8443",
-                            "http://bnauth_bnauth_1:",
-                            "https://bnauth_ws-client_1:3000",
-                            "https://bnauth_ws-client_1:",
-                            "http://bnauth_ws-client_1:3000",
-                            "http://bnauth_ws-client_1:",
+                            "https://bnauth-bnauth-1:8443",
+                            "https://bnauth-bnauth-1",
+                            "http://bnauth-bnauth-1:8443",
+                            "http://bnauth-bnauth-1",
+                            "https://bnauth-ws-client-1:3000",
+                            "https://bnauth-ws-client-1",
+                            "http://bnauth-ws-client-1:3000",
+                            "http://bnauth-ws-client-1",
                             "http://localhost",
                             "https://localhost",
                             "https://localhost:3000"));

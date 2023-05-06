@@ -2,7 +2,7 @@
 
 workdir=~/work/bnauth
 certsdir=$workdir/tools
-. $workdir/tools/log.sh
+source $workdir/tools/log.sh
 
 jwtCert=jwt
 jwtPub=jwt-pub
@@ -20,52 +20,52 @@ main() {
 }
 
 rotateJwtSecret() {
-  inf "JWT" "\tRotating JWT certificates"
-  inf "JWT" "\tGenerating JWT certificates..."
+  inf "certificates" "Rotating JWT certificates"
+  inf "certificates" "Generating JWT certificates..."
   openssl genrsa -out $certsdir/jwt.pem 2048
   openssl rsa -in $certsdir/$jwtCert.pem -pubout -out $certsdir/$jwtPub.pem
   openssl pkcs8 -in $certsdir/$jwtCert.pem -topk8 -nocrypt -inform PEM -outform PEM -out $certsdir/$jwtSecret.pem
   if [ $? -eq 0 ]; then
-    inf "JWT" "\tGenerated JWT certificates"
+    inf "certificates" "Generated JWT certificates"
   else
-    inf "JWT" "\tCould not generate JWT certificates. Exiting"
+    inf "certificates" "Could not generate JWT certificates. Exiting"
     exit
   fi
 
-  inf "JWT" "\tGenerated JWT certificates"
-  inf "JWT" "\tMoving certificates to classpath..."
+  inf "certificates" "Generated JWT certificates"
+  inf "certificates" "Moving certificates to classpath..."
   mv $certsdir/jwt.pem $workdir/src/main/resources/certs/
   mv $certsdir/jwt-pub.pem $workdir/src/main/resources/certs/
   mv $certsdir/jwt-secret.pem $workdir/src/main/resources/certs/
 
-  inf "JWT" "\tDone with JWT rotation [1/2]"
+  inf "certificates" "Done with JWT rotation [1/2]"
 }
 
 rotateTlsCerts() {
-  inf "TLS" "\tRotating TLS certificates"
-  inf "TLS" "\tGenerating CA..."
+  inf "certificates" "Rotating TLS certificates"
+  inf "certificates" "Generating CA..."
   openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=Better Nerf./CN=bnauth' -keyout $certsdir/$tlsCA.key -out $certsdir/$tlsCA.crt
   if [ $? -eq 0 ]; then
-    inf "TLS" "\tGenerated CA certificates"
+    inf "certificates" "Generated CA certificates"
   else
-    inf "JWT" "\tCould not generate CA certificates. Exiting"
+    inf "certificates" "Could not generate CA certificates. Exiting"
     exit
   fi
 
-  inf "TLS" "\tGenerating service keypairs..."
+  inf "certificates" "Generating service keypairs..."
   openssl req -out $certsdir/$tlsClient.csr -newkey rsa:2048 -nodes -keyout $certsdir/$tlsClient.key -subj "/CN=app.bnauth/O=app organization"
   openssl x509 -req -sha256 -days 365 -CA $certsdir/$tlsCA.crt -CAkey $certsdir/$tlsCA.key -set_serial 0 -in $certsdir/$tlsClient.csr -out $certsdir/$tlsClient.crt
   if [ $? -eq 0 ]; then
-    inf "TLS" "\tGenerated service keypair"
+    inf "certificates" "Generated service keypair"
   else
-    inf "JWT" "\tCould not generate service keypair. Exiting"
+    inf "certificates" "Could not generate service keypair. Exiting"
     exit
   fi
 
-  inf "TLS" "\tGenerating service keystore..."
+  inf "certificates" "Generating service keystore..."
   openssl pkcs12 -export -password pass:$keystorePassword -out $certsdir/keystore.p12 -inkey $certsdir/$tlsClient.key -in $certsdir/$tlsClient.crt
 
-  inf "TLS" "\tMoving certificates to classpath..."
+  inf "certificates" "Moving certificates to classpath..."
   cp $certsdir/$tlsClient.crt $workdir/src/main/resources/certs
   mv $certsdir/$tlsClient.crt $workdir/ws-client/keys
   cp $certsdir/$tlsClient.key $workdir/src/main/resources/certs
@@ -81,7 +81,7 @@ rotateTlsCerts() {
   cp $workdir/src/main/resources/application-container-template.yml $workdir/src/main/resources/application-container.yml
   sed -i '' "s/KEYSTORE_SED/$keystorePassword/g" $workdir/src/main/resources/application.yml
   sed -i '' "s/KEYSTORE_SED/$keystorePassword/g" $workdir/src/main/resources/application-container.yml
-  inf "TLS" "\tDone with TLS rotation [2/2]"
+  inf "certificates" "Done with TLS rotation [2/2]"
 }
 
 main

@@ -46,7 +46,7 @@ dependencies {
 
 //    security
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.security:spring-security-messaging:6.0.3'
+    implementation 'org.springframework.security:spring-security-messaging'
     implementation('com.auth0:java-jwt:4.4.0')
 
 //    messaging
@@ -86,8 +86,12 @@ tasks.register('certsWPass', Exec) {
     commandLine "sh", "$projectDir/tools/cert-gen.sh", secretKey
 }
 
+//IMPORTANT: https://docs.docker.com/compose/install/#upgrading
+//due to this issue, there is a discrepency in names. When ran from here if container does not yet exist, names will contain underscores. When ran from docker-compose, names will contain dashes.
+//Code addresses dashed version.
+//Also, pgData gradle task uses dashed names.
 tasks.register('pgRun', Exec) {
-    commandLine 'docker-compose', '-f', './tools/docker-compose.yml', '-p', 'bnauth', 'up', '-d'
+    commandLine 'docker-compose', '-f', './tools/docker-compose.yml', '-p', 'bnauth', 'up', '--force-recreate', '-d'
 }
 
 tasks.register('pgStop', Exec) {
@@ -95,11 +99,11 @@ tasks.register('pgStop', Exec) {
 }
 
 tasks.register('pgData', Exec) {
-    commandLine "docker", "exec", "bnauth_postgres_1", "psql", "-U", "ui_test", "-d", "ui_test", "-a", "-f", "ui_test_populate.sql"
+    commandLine "docker", "exec", "bnauth-postgres-1", "psql", "-U", "ui_test", "-d", "ui_test", "-a", "-f", "ui_test_populate.sql"
     environment 'PGPASSWORD', 'ui_test'
 }
 
 tasks.register('runAll', Exec) {
-    commandLine "sh", "$projectDir/tools/container.sh"
-    commandLine 'docker-compose', 'up', '-d'
+    def secretKey = project.hasProperty('secretKey') ? project.property('secretKey') : ''
+    commandLine "sh", "$projectDir/docker.sh", "-p", secretKey
 }

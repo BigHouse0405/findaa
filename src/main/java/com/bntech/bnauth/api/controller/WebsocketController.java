@@ -14,7 +14,7 @@ public class WebsocketController {
 
     @MessageMapping("/newError")
     @SendTo(ws_ERRORS_TOPIC)
-    public AuthenticationFailureEvent greeting(AuthenticationFailureEvent message) throws Exception {
+    public AuthenticationFailureEvent authenticationFailureEvent(AuthenticationFailureEvent message) throws Exception {
         return new AuthenticationFailureEvent(message.getContent(), Instant.now());
     }
 }

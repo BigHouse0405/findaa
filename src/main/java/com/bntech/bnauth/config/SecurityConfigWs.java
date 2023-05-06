@@ -38,7 +38,7 @@ public class SecurityConfigWs {
         FilterRegistrationBean<JwtRequestFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(jwtFilter);
         registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        registrationBean.addUrlPatterns("/api/**");
+        registrationBean.addUrlPatterns("/**");
         return registrationBean;
     }
 }

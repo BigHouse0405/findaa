@@ -3,7 +3,6 @@ FROM openjdk:17-jdk-slim-buster
 ENV SPRING_PROFILES_ACTIVE="container"
 WORKDIR /app
 
-COPY .gradle/ .gradle
 COPY gradlew build.gradle gradle ./
 COPY gradle/wrapper ./gradle/wrapper
 COPY src ./src

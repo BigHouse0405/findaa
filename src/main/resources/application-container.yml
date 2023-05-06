@@ -10,7 +10,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://bnauth_postgres_1:5432/ui_test
+    url: jdbc:postgresql://bnauth-postgres-1:5432/ui_test
     username: ui_test
     password: ui_test
     driver-class-name: org.postgresql.Driver
