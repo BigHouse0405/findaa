@@ -5,12 +5,12 @@ server:
     key-store: classpath:keystore.p12
     key-store-password: KEYSTORE_SED
     key-store-type: PKCS12
-    trust-certificate: classpath:certs/qrekru.crt
-    trust-certificate-private-key: classpath:certs/qrekru.key
+    trust-certificate: classpath:certs/bnauth.crt
+    trust-certificate-private-key: classpath:certs/bnauth.key
 
 spring:
   datasource:
-    url: jdbc:postgresql://qrekru_postgres_1:5432/ui_test
+    url: jdbc:postgresql://bnauth_postgres_1:5432/ui_test
     username: ui_test
     password: ui_test
     driver-class-name: org.postgresql.Driver

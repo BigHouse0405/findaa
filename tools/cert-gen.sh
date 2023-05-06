@@ -1,14 +1,14 @@
 #!/bin/bash
 
-workdir=~/work/qrekru
+workdir=~/work/bnauth
 certsdir=$workdir/tools
 . $workdir/tools/log.sh
 
 jwtCert=jwt
 jwtPub=jwt-pub
 jwtSecret=jwt-secret
-tlsCA=qrekru
-tlsClient=app.qrekru
+tlsCA=bnauth
+tlsClient=app.bnauth
 keystorePassword=$1
 
 main() {
@@ -22,7 +22,7 @@ main() {
 rotateJwtSecret() {
   inf "JWT" "\tRotating JWT certificates"
   inf "JWT" "\tGenerating JWT certificates..."
-  openssl genrsa -out jwt.pem 2048
+  openssl genrsa -out $certsdir/jwt.pem 2048
   openssl rsa -in $certsdir/$jwtCert.pem -pubout -out $certsdir/$jwtPub.pem
   openssl pkcs8 -in $certsdir/$jwtCert.pem -topk8 -nocrypt -inform PEM -outform PEM -out $certsdir/$jwtSecret.pem
   if [ $? -eq 0 ]; then
@@ -44,7 +44,7 @@ rotateJwtSecret() {
 rotateTlsCerts() {
   inf "TLS" "\tRotating TLS certificates"
   inf "TLS" "\tGenerating CA..."
-  openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=Better Nerf./CN=qrekru' -keyout $certsdir/$tlsCA.key -out $certsdir/$tlsCA.crt
+  openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=Better Nerf./CN=bnauth' -keyout $certsdir/$tlsCA.key -out $certsdir/$tlsCA.crt
   if [ $? -eq 0 ]; then
     inf "TLS" "\tGenerated CA certificates"
   else
@@ -53,7 +53,7 @@ rotateTlsCerts() {
   fi
 
   inf "TLS" "\tGenerating service keypairs..."
-  openssl req -out $certsdir/$tlsClient.csr -newkey rsa:2048 -nodes -keyout $certsdir/$tlsClient.key -subj "/CN=localhost/O=app organization"
+  openssl req -out $certsdir/$tlsClient.csr -newkey rsa:2048 -nodes -keyout $certsdir/$tlsClient.key -subj "/CN=app.bnauth/O=app organization"
   openssl x509 -req -sha256 -days 365 -CA $certsdir/$tlsCA.crt -CAkey $certsdir/$tlsCA.key -set_serial 0 -in $certsdir/$tlsClient.csr -out $certsdir/$tlsClient.crt
   if [ $? -eq 0 ]; then
     inf "TLS" "\tGenerated service keypair"
@@ -65,16 +65,16 @@ rotateTlsCerts() {
   inf "TLS" "\tGenerating service keystore..."
   openssl pkcs12 -export -password pass:$keystorePassword -out $certsdir/keystore.p12 -inkey $certsdir/$tlsClient.key -in $certsdir/$tlsClient.crt
 
-
   inf "TLS" "\tMoving certificates to classpath..."
   cp $certsdir/$tlsClient.crt $workdir/src/main/resources/certs
-  mv $certsdir/$tlsClient.crt $workdir/tools/stomp/keys
-  mv $certsdir/$tlsClient.key $workdir/src/main/resources/certs
+  mv $certsdir/$tlsClient.crt $workdir/ws-client/keys
+  cp $certsdir/$tlsClient.key $workdir/src/main/resources/certs
+  mv $certsdir/$tlsClient.key $workdir/ws-client/keys
 
   cp $certsdir/$tlsCA.crt $workdir/src/main/resources/certs
-  mv $certsdir/$tlsCA.crt $workdir/tools/stomp/keys
+  mv $certsdir/$tlsCA.crt $workdir/ws-client/keys
   cp $certsdir/$tlsCA.key $workdir/src/main/resources/certs
-  mv $certsdir/$tlsCA.key $workdir/tools/stomp/keys
+  mv $certsdir/$tlsCA.key $workdir/ws-client/keys
 
   mv $certsdir/keystore.p12 $workdir/src/main/resources
   cp $workdir/src/main/resources/application-template.yml $workdir/src/main/resources/application.yml

@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.6'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.21'
 }
 
 group = 'com.bntech'
@@ -27,14 +28,14 @@ dependencyManagement {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'com.bntech.qrekru.QrekruApplication'
+                'Main-Class': 'com.bntech.bnauth.BnAuthApplication'
         )
     }
 }
 
 bootJar {
     enabled = true
-    mainClass = 'com.bntech.qrekru.QrekruApplication'
+    mainClass = 'com.bntech.bnauth.BnAuthApplication'
 }
 
 dependencies {
@@ -45,6 +46,7 @@ dependencies {
 
 //    security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-messaging:6.0.3'
     implementation('com.auth0:java-jwt:4.4.0')
 
 //    messaging
@@ -67,6 +69,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
 }
 
@@ -74,20 +77,29 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-tasks.register('startPostgres', Exec) {
-    commandLine 'docker-compose', '-f', './tools/docker-compose.yml', '-p', 'qrekru', 'up', '-d'
+tasks.register('certs', Exec) {
+    commandLine "sh", "$projectDir/tools/cert-gen.sh"
 }
 
-tasks.register('stopPostgres', Exec) {
-    commandLine 'docker-compose', '-p', 'qrekru', '-f', './tools/docker-compose.yml', 'down'
+tasks.register('certsWPass', Exec) {
+    def secretKey = project.hasProperty('secretKey') ? project.property('secretKey') : ''
+    commandLine "sh", "$projectDir/tools/cert-gen.sh", secretKey
 }
 
-tasks.register('populateDatabase', Exec) {
-    commandLine "docker", "exec", "qrekru_postgres_1", "psql", "-U", "ui_test", "-d", "ui_test", "-a", "-f", "ui_test_populate.sql"
+tasks.register('pgRun', Exec) {
+    commandLine 'docker-compose', '-f', './tools/docker-compose.yml', '-p', 'bnauth', 'up', '-d'
+}
+
+tasks.register('pgStop', Exec) {
+    commandLine 'docker-compose', '-p', 'bnauth', '-f', './tools/docker-compose.yml', 'down'
+}
+
+tasks.register('pgData', Exec) {
+    commandLine "docker", "exec", "bnauth_postgres_1", "psql", "-U", "ui_test", "-d", "ui_test", "-a", "-f", "ui_test_populate.sql"
     environment 'PGPASSWORD', 'ui_test'
 }
 
-tasks.register('runContainer', Exec) {
+tasks.register('runAll', Exec) {
     commandLine "sh", "$projectDir/tools/container.sh"
     commandLine 'docker-compose', 'up', '-d'
 }

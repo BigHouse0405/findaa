@@ -16,12 +16,18 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  qrekru:
-    image: finda/bntech-qrekru:latest.arm
+  bnauth:
+    image: finda/bntech-bnauth:latest.arm
     build: .
     ports:
       - "8443:8443"
     depends_on:
       postgres:
         condition: service_healthy
+    restart: always
+  ws-client:
+    build: ./ws-client/.
+    image: finda/bnauth-ws-client:latest.arm
+    ports:
+      - "3000:3000"
     restart: always
